@@ -1,38 +1,29 @@
 #!/usr/bin/python3
 "Returns information employee ID"
 
-import urllib.request
-import json
+import requests
 
 
 def todo_list_progress(employee_id):
 
-    base_url = 'https://jsonplaceholder.typicode.com/users/'
+    url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
+    employee = requests.get(url).json()
 
-    # Retrieves employee details
-    with urllib.request.urlopen(f'{base_url}{employee_id}') as url:
-        employee = json.loads(url.read().decode())
+    url = f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos'
+    todos = requests.get(url).json()
 
-    # Retrieves the employee's todo list
-    with urllib.request.urlopen(f'{base_url}{employee_id}/todos') as url:
-        todos = json.loads(url.read().decode())
-
-    # Calculates progress
     total_tasks = len(todos)
-    done_tasks = sum(todo.get('completed') for todo in todos)
-    employee_name = employee.get('name')
+    done_tasks = len([todo for todo in todos if todo['completed']])
+    employee_name = employee['name']
 
-    # Print progress
     print(f'Employee {employee_name} is done with tasks'
           f'({done_tasks}/{total_tasks}):')
 
-    # Print completed tasks
     for todo in todos:
-        if todo.get('completed'):
-            print('\t ' + todo.get('title'))
+        if todo['completed']:
+            print('\t ' + todo['title'])
 
 
 if __name__ == "__main__":
 
-    # Test the function with a sample employee ID
     todo_list_progress(1)
