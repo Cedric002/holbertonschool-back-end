@@ -1,34 +1,26 @@
 #!/usr/bin/python3
-
 "Returns information employee ID"
 "Export in JSON format method"
 
 import json
 import requests
+import sys
 
 
-def todo_list_progress(employee_id):
+def export_employee_todo_list(employee_id):
 
-    url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
-    employee = requests.get(url).json()
+    user_response = requests.get(
+        f'https://jsonplaceholder.typicode.com/users/{employee_id}')
+    todos_response = requests.get(
+        f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos')
 
-    url = f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos'
-    todos = requests.get(url).json()
+    user_data = user_response.json()
+    todos_data = todos_response.json()
+    employee_name = user_data.get('name')
 
-    total_tasks = len(todos)
-    done_tasks = len([todo for todo in todos if todo['completed']])
-
-    print(f'Employee {employee["name"]} is done with tasks'
-          f'({done_tasks}/{total_tasks}):')
-    tasks = []
-
-    for todo in todos:
-        task = {"task": todo['title'], "completed": todo['completed'],
-                "username": employee["name"]}
-        tasks.append(task)
-
-        if todo['completed']:
-            print('\t ' + todo['title'])
+    tasks = [{"task": task.get('title'), "completed":
+              task.get('completed'), "username": employee_name}
+             for task in todos_data]
 
     with open(f'{employee_id}.json', 'w') as file:
         json.dump({employee_id: tasks}, file)
@@ -36,4 +28,5 @@ def todo_list_progress(employee_id):
 
 if __name__ == "__main__":
 
-    todo_list_progress()
+    employee_id = int(sys.argv[1])
+    export_employee_todo_list(employee_id)
