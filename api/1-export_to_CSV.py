@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-import csv
-import requests
-
 "Returns information employee ID"
 "Export in CSV format method"
+
+import csv
+import requests
 
 
 def todo_list_progress(employee_id):

@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-import json
-import requests
-
 "Returns information employee ID"
 "Export in CSV format method"
 "Export in JSON format method"
+
+import csv
+import requests
 
 
 def todo_list_progress(employee_id):
