@@ -36,4 +36,4 @@ def todo_list_progress(employee_id):
 
 if __name__ == "__main__":
 
-    todo_list_progress(1)
+    todo_list_progress()
