@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 "Returns information employee ID"
 
-import requests # type: ignore
+import requests  # type: ignore
 
 
 def todo_list_progress(employee_id):
+
     employee = requests.get(f'https://jsonplaceholder.typicode.com/users/{employee_id}').json()
     todos = requests.get(f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos').json()
 
@@ -18,7 +19,7 @@ def todo_list_progress(employee_id):
         if todo['completed']:
             print('\t ' + todo['title'])
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
 
     todo_list_progress(1)
