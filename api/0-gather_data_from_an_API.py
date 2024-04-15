@@ -1,9 +1,7 @@
 #!/usr/bin/python3
 "Returns information employee ID"
 
-import json
 import requests
-import sys
 
 
 def todo_list_progress(employee_id):
