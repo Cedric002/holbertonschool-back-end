@@ -31,8 +31,8 @@ def export_employee_todo_list(employee_id):
                  task['title']) for task in todos_data]
 
     # Export the data to a CSV file
-    USER_ID = f"{user_data['id']}.csv"
-    with open(USER_ID, 'w', newline='') as csvfile:
+    employee_id = f"{user_data['id']}.csv"
+    with open(employee_id, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(["USER_ID",
                             "USERNAME",
@@ -40,7 +40,7 @@ def export_employee_todo_list(employee_id):
                             "TASK_TITLE"])
         csvwriter.writerows(csv_data)
 
-    print(f"CSV file '{USER_ID}' created successfully.")
+    print(f"CSV file '{employee_id}' created successfully.")
 
 
 if __name__ == "__main__":
