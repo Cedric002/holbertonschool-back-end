@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 
-import csv
-import requests
-import sys
-
 
 "Returns information employee ID"
 "Export in CSV format method"
+
+import csv
+import requests
+import sys
 
 
 def export_employee_todo_list(employee_id):
@@ -25,11 +25,9 @@ def export_employee_todo_list(employee_id):
     print(f'Employee {employee_name} is done with tasks'
           f'({len(done_tasks)}/{len(todos_data)}):')
 
-    # Create a list of tuples containing the required data
     csv_data = [(user_data['id'], user_data['name'], task['completed'],
                  task['title']) for task in todos_data]
 
-    # Export the data to a CSV file
     employee_id = f"{user_data['id']}.csv"
     with open(employee_id, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
