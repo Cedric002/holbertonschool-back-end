@@ -1,12 +1,14 @@
 #!/usr/bin/python3
 
 
-"Returns information employee ID"
-"Export in JSON format method"
-
 import json
 import requests
 import sys
+
+
+"Returns information employee ID"
+"Export in JSON format method"
+
 
 
 def export_employee_todo_list(employee_id):
@@ -35,6 +37,7 @@ def export_employee_todo_list(employee_id):
         print('\t ' + task.get('task'))
 
     return {str(employee_id): tasks}
+
 
 if __name__ == "__main__":
 
