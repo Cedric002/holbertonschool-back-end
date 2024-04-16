@@ -1,34 +1,48 @@
 #!/usr/bin/python3
 
-"Returns information employee ID"
-"Export in CSV format method"
-
 import csv
 import requests
 import sys
 
 
-def export_employee_todo_list(USER_ID):
+"Returns information employee ID"
+"Export in CSV format method"
 
+
+def export_employee_todo_list(employee_id):
     user_response = requests.get(
-        f'https://jsonplaceholder.typicode.com/users/{USER_ID}')
+        f'https://jsonplaceholder.typicode.com/users/{employee_id}')
     todos_response = requests.get(
-        f'https://jsonplaceholder.typicode.com/users/{USER_ID}/todos')
+        f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos')
 
     user_data = user_response.json()
     todos_data = todos_response.json()
-    USERNAME = user_data.get('name')
 
-    rows = [[USER_ID, USERNAME, task.get('TASK_COMPLETED_STATUS'),
-             task.get('TASK_TITLE')]
-            for task in todos_data]
+    employee_name = user_data.get('name')
 
-    with open(f'{USER_ID}.csv', 'w', newline='') as file:
-        writer = csv.writer(file, quoting=csv.QUOTE_ALL)
-        writer.writerows(rows)
+    done_tasks = [task for task in todos_data if task.get('completed')]
+
+    print(f'Employee {employee_name} is done with tasks'
+          f'({len(done_tasks)}/{len(todos_data)}):')
+
+    # Create a list of tuples containing the required data
+    csv_data = [(user_data['id'], user_data['name'], task['completed'],
+                 task['title']) for task in todos_data]
+
+    # Export the data to a CSV file
+    USER_ID = f"{user_data['id']}.csv"
+    with open(USER_ID, 'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerow(["USER_ID",
+                            "USERNAME",
+                            "TASK_COMPLETED_STATUS",
+                            "TASK_TITLE"])
+        csvwriter.writerows(csv_data)
+
+    print(f"CSV file '{USER_ID}' created successfully.")
 
 
 if __name__ == "__main__":
 
-    USER_ID = int(sys.argv[1])
-    export_employee_todo_list(USER_ID)
+    employee_id = int(sys.argv[1])
+    export_employee_todo_list(employee_id)
