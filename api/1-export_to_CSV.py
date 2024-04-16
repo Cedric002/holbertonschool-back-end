@@ -11,6 +11,7 @@ import sys
 
 
 def export_employee_todo_list(employee_id):
+
     user_response = requests.get(
         f'https://jsonplaceholder.typicode.com/users/{employee_id}')
     todos_response = requests.get(
@@ -21,26 +22,11 @@ def export_employee_todo_list(employee_id):
 
     employee_name = user_data.get('name')
 
-    done_tasks = [task for task in todos_data if task.get('completed')]
-
-    print(f'Employee {employee_name} is done with tasks'
-          f'({len(done_tasks)}/{len(todos_data)}):')
-
-    # Create a list of tuples containing the required data
-    csv_data = [(user_data['id'], user_data['name'], task['completed'],
-                 task['title']) for task in todos_data]
-
-    # Export the data to a CSV file
-    employee_id = f"{user_data['id']}.csv"
-    with open(employee_id, 'w', newline='') as csvfile:
-        csvwriter = csv.writer(csvfile)
-        csvwriter.writerow(["USER_ID",
-                            "USERNAME",
-                            "TASK_COMPLETED_STATUS",
-                            "TASK_TITLE"])
-        csvwriter.writerows(csv_data)
-
-    print(f"CSV file '{employee_id}' created successfully.")
+    with open(f'{employee_id}.csv', 'w', newline='') as file:
+        writer = csv.writer(file, quoting=csv.QUOTE_ALL)
+        for task in todos_data:
+            writer.writerow([employee_id, employee_name,
+                             task.get('completed'), task.get('title')])
 
 
 if __name__ == "__main__":
