@@ -12,32 +12,30 @@ import sys
 
 def export_all_employees_todo_list():
 
-    user_response = requests.get('https://jsonplaceholder.typicode.com/users')
-    user_data = user_response.json()
+    users_response = requests.get('https://jsonplaceholder.typicode.com/users')
+    users_data = users_response.json()
 
-    all_employee_tasks = {}
+    all_data = {}
 
-    for user in user_data:
-        user_id = user['id']
-        username = user['username']
+    for user in users_data:
+        employee_id = user.get('id')
+        employee_name = user.get('username')
+
         todos_response = requests.get(
-            f'https://jsonplaceholder.typicode.com/users/{user_id}/todos')
+            f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos')
         todos_data = todos_response.json()
 
-        employee_tasks = []
-        for task in todos_data:
-            employee_tasks.append({
-                "username": username,
-                "task": task['title'],
-                "completed": task['completed']
-            })
+        all_data[employee_id] = [
+            {
+                "username": employee_name,
+                "task": task.get('title'),
+                "completed": task.get('completed')
+            }
+            for task in todos_data
+        ]
 
-        all_employee_tasks[user_id] = employee_tasks
-
-    with open('todo_all_employees.json', 'w') as f:
-        json.dump(all_employee_tasks, f, indent=4)
-
-    print("Data exported to 'todo_all_employees.json'")
+    with open('todo_all_employees.json', 'w') as file:
+        json.dump(all_data, file, indent=4)
 
 
 if __name__ == "__main__":
