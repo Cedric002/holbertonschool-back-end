@@ -26,11 +26,13 @@ def export_employee_todo_list(employee_id):
     print(f'Employee {employee_name} is done with tasks'
           f'({len(done_tasks)}/{len(todos_data)}):')
 
-    csv_data = [(user_data['id'], user_data['name'],
-                 task['completed'], task['title']) for task in todos_data]
+    # Create a list of tuples containing the required data
+    csv_data = [(user_data['id'], user_data['name'], task['completed'],
+                 task['title']) for task in todos_data]
 
-    csv_filename = f"{user_data['id']}.csv"
-    with open(csv_filename, 'w', newline='') as csvfile:
+    # Export the data to a CSV file
+    USER_ID = f"{user_data['id']}.csv"
+    with open(USER_ID, 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(["USER_ID",
                             "USERNAME",
@@ -38,7 +40,7 @@ def export_employee_todo_list(employee_id):
                             "TASK_TITLE"])
         csvwriter.writerows(csv_data)
 
-    print(f"CSV file '{csv_filename}' created successfully.")
+    print(f"CSV file '{USER_ID}' created successfully.")
 
 
 if __name__ == "__main__":
