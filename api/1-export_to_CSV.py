@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 
-import csv
-import requests
-import sys
-
 
 "Returns information employee ID"
 "Export in CSV format method"
+
+import csv
+import requests
+import sys
 
 
 def export_employee_todo_list(employee_id):
