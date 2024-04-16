@@ -1,10 +1,11 @@
 #!/usr/bin/python3
-"Returns information employee ID"
-"Export in JSON format method"
 
 import json
 import requests
 import sys
+
+"Returns information employee ID"
+"Export in JSON format method"
 
 
 def export_employee_todo_list(employee_id):

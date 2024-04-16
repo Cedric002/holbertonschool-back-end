@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-"Returns all tasks of all employees"
-"Export in JSON format method"
-
 import json
 import requests
+
+"Returns all tasks of all employees"
+"Export in JSON format method"
 
 
 def export_all_employees_todo_list():
