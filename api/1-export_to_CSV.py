@@ -6,30 +6,38 @@
 
 
 import csv
+import json
 import requests
 import sys
 
 
-def export_employee_todo_list(employee_id):
+def export_api(user_id):
+    url_users = 'https://jsonplaceholder.typicode.com/users/' + user_id
 
-    user_response = requests.get(
-        f'https://jsonplaceholder.typicode.com/users/{employee_id}')
-    todos_response = requests.get(
-        f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos')
+    response = requests.get(url_users)
+    if (response.ok):
+        jData = json.loads(response.content)
+        EMPLOYEE_NAME = jData["username"]
+    else:
+        response.raise_for_status()
 
-    user_data = user_response.json()
-    todos_data = todos_response.json()
+    url_todos = "https://jsonplaceholder.typicode.com/todos"
+    query = {'userId': user_id}
 
-    employee_name = user_data.get('name')
+    response = requests.get(url_todos, params=query)
+    if (response.ok):
+        jData = json.loads(response.content)
 
-    with open(f'{employee_id}.csv', 'w', newline='') as file:
-        writer = csv.writer(file, quoting=csv.QUOTE_ALL)
-        for task in todos_data:
-            writer.writerow([employee_id, employee_name,
-                             task.get('completed'), task.get('title')])
+        with open("{}.csv".format(user_id), "w", encoding='utf-8') as f:
+            csv_writer = csv.writer(f, quoting=csv.QUOTE_ALL)
+            for task in jData:
+                csv_writer.writerow([user_id, EMPLOYEE_NAME,
+                                    task.get("completed"),
+                                    task.get("title")])
+    else:
+        response.raise_for_status()
 
 
 if __name__ == "__main__":
 
-    employee_id = int(sys.argv[1])
-    export_employee_todo_list(employee_id)
+    export_api(sys.argv[1])

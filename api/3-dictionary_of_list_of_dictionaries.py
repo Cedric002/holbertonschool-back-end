@@ -6,38 +6,61 @@
 
 
 import json
-import requests
-import sys
+import urllib.request
 
 
-def export_all_employees_todo_list():
+def export_to_json():
+    # API endpoint URL for users
+    users_url = "https://jsonplaceholder.typicode.com/users"
 
-    users_response = requests.get('https://jsonplaceholder.typicode.com/users')
-    users_data = users_response.json()
+    # Send GET request to the API for users
+    with urllib.request.urlopen(users_url) as response:
+        # Check if the request was successful
+        if response.status == 200:
+            # Get the JSON data from the response
+            users = json.loads(response.read().decode())
 
-    all_data = {}
+            # Create a dictionary to store the tasks for all users
+            all_tasks = {}
 
-    for user in users_data:
-        employee_id = user.get('id')
-        employee_name = user.get('username')
+            # Iterate over each user
+            for user in users:
+                user_id = str(user["id"])
+                username = user["username"]
 
-        todos_response = requests.get(
-            f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos')
-        todos_data = todos_response.json()
+                # API endpoint URL for user's tasks
+                base_url = "https://jsonplaceholder.typicode.com/users/"
+                tasks_url = base_url + f"{user_id}/todos"
 
-        all_data[employee_id] = [
-            {
-                "username": employee_name,
-                "task": task.get('title'),
-                "completed": task.get('completed')
-            }
-            for task in todos_data
-        ]
+                # Send GET request to the API for user's tasks
+                with urllib.request.urlopen(tasks_url) as response:
+                    # Check if the request was successful
+                    if response.status == 200:
+                        # Get the JSON data from the response
+                        todos = json.loads(response.read().decode())
 
-    with open('todo_all_employees.json', 'w') as file:
-        json.dump(all_data, file, indent=4)
+                        # Create a list of dictionaries for the user's tasks
+                        user_tasks = [
+                            {
+                                "username": username,
+                                "task": task["title"],
+                                "completed": task["completed"]
+                            } for task in todos
+                        ]
+
+                        # Add the user's tasks to the all_tasks dictionary
+                        all_tasks[user_id] = user_tasks
+
+            # Create a JSON file with all tasks for all employees
+            filename = "todo_all_employees.json"
+            with open(filename, mode='w') as file:
+                json.dump(all_tasks, file)
+
+            # print(f"Data exported to {filename}")
+        else:
+            print(f"Error: {response.status}")
 
 
 if __name__ == "__main__":
 
-    export_all_employees_todo_list()
+    export_to_json()

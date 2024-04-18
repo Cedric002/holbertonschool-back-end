@@ -10,38 +10,36 @@ import requests
 import sys
 
 
-def export_employee_todo_list(employee_id):
+def export_api(user_id):
+    url_users = 'https://jsonplaceholder.typicode.com/users/' + user_id
 
-    user_response = requests.get(
-        f'https://jsonplaceholder.typicode.com/users/{employee_id}')
-    todos_response = requests.get(
-        f'https://jsonplaceholder.typicode.com/users/{employee_id}/todos')
+    response = requests.get(url_users)
+    if (response.ok):
+        jData = json.loads(response.content)
+        EMPLOYEE_NAME = jData["username"]
+    else:
+        response.raise_for_status()
 
-    user_data = user_response.json()
-    todos_data = todos_response.json()
+    url_todos = "https://jsonplaceholder.typicode.com/todos"
+    query = {'userId': user_id}
 
-    employee_name = user_data.get('name')
+    response = requests.get(url_todos, params=query)
+    if (response.ok):
+        jData = json.loads(response.content)
 
-    tasks = [
-        {
-            "task": task.get('title'),
-            "completed": task.get('completed'),
-            "username": employee_name
-        } for task in todos_data
-    ]
+        tasks = []
+        for task in jData:
+            tasks.append({
+                "task": task.get("title"), "completed": task.get("completed"),
+                "username": EMPLOYEE_NAME
+            })
 
-    print(f'Employee {employee_name} has {len(tasks)} tasks:')
-
-    for task in tasks:
-        print('\t ' + task.get('task'))
-
-    return {str(employee_id): tasks}
+        with open("{}.json".format(user_id), "w") as json_file:
+            json.dump({user_id: tasks}, json_file)
+    else:
+        response.raise_for_status()
 
 
 if __name__ == "__main__":
 
-    employee_id = int(sys.argv[1])
-    employee_tasks = export_employee_todo_list(employee_id)
-
-    with open(f"{employee_id}.json", "w") as f:
-        json.dump(employee_tasks, f, indent=4)
+    export_api(sys.argv[1])
